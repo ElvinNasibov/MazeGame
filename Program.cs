@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -55,40 +56,41 @@ namespace MazeGame
     {
         public Wall()
         {
-
+            
         }
 
         public override void Enter()
         {
             Console.WriteLine("Wall");
         }
-    }
-
-    class Door : MapSite
-    {
-        Room room1 = null;
-        Room room2 = null;
-        bool isOpen;
         
-        public Door(Room room1, Room room2)
-        {
-            this.room1 = room1;
-            this.room2 = room2;
-        }
-
-        public override void Enter()
-        {
-            Console.WriteLine("Door");
-        }
-
-        public Room OtherSideFrom(Room room)
-        {
-            if (room == room1)
-                return room2;
-            else
-                return room1;
-        }
     }
+
+    //class Door : MapSite
+    //{
+    //    Room room1 = null;
+    //    Room room2 = null;
+    //    bool isOpen;
+        
+    //    public Door(Room room1, Room room2)
+    //    {
+    //        this.room1 = room1;
+    //        this.room2 = room2;
+    //    }
+
+    //    public override void Enter()
+    //    {
+    //        Console.WriteLine("Door");
+    //    }
+
+    //    public Room OtherSideFrom(Room room)
+    //    {
+    //        if (room == room1)
+    //            return room2;
+    //        else
+    //            return room1;
+    //    }
+    //}
 
     class Maze
     {
@@ -375,10 +377,10 @@ namespace MazeGame
         }
     }
 
-    class BombedWall : Wall
-    {
+    //class BombedWall : Wall
+    //{
 
-    }
+    //}
 
     class EnchantedMazeGame : MazeGame
     {
@@ -418,10 +420,134 @@ namespace MazeGame
         }
     }
 
+
+
+    //--------------------------------------------------- Prototype
+
+    class MazePrototypeFactory : MazeFactory
+    {
+        Maze prototypeMaze = null;
+        Room prototypeRoom = null;
+        Wall prototypeWall = null;
+        Door prototypeDoor = null;
+
+        public MazePrototypeFactory(Maze maze, Wall wall, Room room, Door door)
+        {
+            this.prototypeMaze = maze;
+            this.prototypeWall = wall;
+            this.prototypeRoom = room;
+            this.prototypeDoor = door;
+        }
+
+        public override Maze MakeMaze()
+        {
+            return prototypeMaze.Clone();
+        }
+
+        public override Room MakeRoom(int number)
+        {
+            Room room = prototypeRoom.Clone();
+            room.Initialize(number);
+
+            return room;
+        }
+
+        public override Wall MakeWall()
+        {
+            return prototypeWall.Clone();
+        }
+
+        public override Door MakeDoor(Room room1, Room room2)
+        {
+            Door door = prototypeDoor.Clone();
+            door.Initalize(room1, room2);
+
+            return door;
+        }
+
+    }
+
+    class Door : MapSite
+    {
+        Room room1 = null;
+        Room room2 = null;
+        bool isOpen;
+
+        public Door() { }
+
+        public Door(Door other)
+        {
+            this.room1 = other.room1;
+            this.room2 = other.room2;
+        }
+        public Door(Room room1, Room room2)
+        {
+            this.room1 = room1;
+            this.room2 = room2;
+        }
+
+        public override void Enter()
+        {
+            Console.WriteLine("Door");
+        }
+
+        public Room OtherSideFrom(Room room)
+        {
+            if (room == room1)
+                return room2;
+            else
+                return room1;
+        }
+
+        public virtual Door Clone()
+        {
+            Door door = new Door(this.room1, this.room2);
+            door.isOpen = this.isOpen;
+            return door;
+        }
+
+        public virtual void Initialize(Room room1, Room room2)
+        {
+            this.room1 = room1;
+            this.room2 = room2;
+        }
+
+    }
+
+    class BombedWall : Wall
+    {
+        bool bomb;
+        public BombedWall() { }
+        public BombedWall(BombedWall other) 
+        {
+            this.bomb = other.bomb;
+        }
+
+        public virtual Wall Clone()
+        {
+            return new BombedWall(this);
+        }
+
+        public bool HasBomb()
+        {
+            return this.bomb;
+        }
+    }
+
+
     class Program
     {
         static void Main(string[] args)
         {
+            //--------------------------------------------------- Prototype
+            MazeGame game = new MazeGame();
+
+            MazePrototypeFactory simpleMazeFactory = new MazePrototypeFactory(new Maze(), new Wall(), new Room(), new Door());
+
+            Maze maze = game.CreateMaze(simpleMazeFactory);
+
+            MazePrototypeFactory bombedMazeFactory = new MazePrototypeFactory(new Maze(), new Wall(), new Room(), new Door());
+
             Console.ReadKey();
         }
 
