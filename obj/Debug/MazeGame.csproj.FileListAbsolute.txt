@@ -1,0 +1,7 @@
+D:\OWN\ZAIMOGLU\Projects\MazeGame\bin\Debug\MazeGame.exe.config
+D:\OWN\ZAIMOGLU\Projects\MazeGame\bin\Debug\MazeGame.exe
+D:\OWN\ZAIMOGLU\Projects\MazeGame\bin\Debug\MazeGame.pdb
+D:\OWN\ZAIMOGLU\Projects\MazeGame\obj\Debug\MazeGame.csprojAssemblyReference.cache
+D:\OWN\ZAIMOGLU\Projects\MazeGame\obj\Debug\MazeGame.csproj.CoreCompileInputs.cache
+D:\OWN\ZAIMOGLU\Projects\MazeGame\obj\Debug\MazeGame.exe
+D:\OWN\ZAIMOGLU\Projects\MazeGame\obj\Debug\MazeGame.pdb
