@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,53 +19,53 @@ namespace MazeGame
         public abstract void Enter();
     }
 
-    class Room : MapSite
-    {
-        int roomNumber = 0;
-        Dictionary<Direction, MapSite> sides;
+    //class Room : MapSite
+    //{
+    //    int roomNumber = 0;
+    //    Dictionary<Direction, MapSite> sides;
 
-        public Room(int roomNo)
-        {
-            this.roomNumber = roomNo;
-            sides = new Dictionary<Direction, MapSite>(4);
-        }
+    //    public Room(int roomNo)
+    //    {
+    //        this.roomNumber = roomNo;
+    //        sides = new Dictionary<Direction, MapSite>(4);
+    //    }
 
-        public override void Enter()
-        {
-            Console.WriteLine("Room");
-        }
+    //    public override void Enter()
+    //    {
+    //        Console.WriteLine("Room");
+    //    }
 
-        public MapSite GetSide(Direction direction)
-        {
-            return sides[direction];
-        }
-        public void SetSide(Direction direction, MapSite mapSite)
-        {
-            this.sides.Add(direction, mapSite);
-        }
+    //    public MapSite GetSide(Direction direction)
+    //    {
+    //        return sides[direction];
+    //    }
+    //    public void SetSide(Direction direction, MapSite mapSite)
+    //    {
+    //        this.sides.Add(direction, mapSite);
+    //    }
 
-        public int RoomNumber
-        {
-            get { return roomNumber; }
-            set { roomNumber = value; }
-        }
+    //    public int RoomNumber
+    //    {
+    //        get { return roomNumber; }
+    //        set { roomNumber = value; }
+    //    }
 
-    }
+    //}
 
 
-    class Wall : MapSite
-    {
-        public Wall()
-        {
+    //class Wall : MapSite
+    //{
+    //    public Wall()
+    //    {
             
-        }
+    //    }
 
-        public override void Enter()
-        {
-            Console.WriteLine("Wall");
-        }
+    //    public override void Enter()
+    //    {
+    //        Console.WriteLine("Wall");
+    //    }
         
-    }
+    //}
 
     //class Door : MapSite
     //{
@@ -92,24 +93,24 @@ namespace MazeGame
     //    }
     //}
 
-    class Maze
-    {
-        Dictionary<int, Room> rooms = null;
+    //class Maze
+    //{
+    //    Dictionary<int, Room> rooms = null;
 
-        public Maze()
-        {
-            this.rooms = new Dictionary<int, Room>();
-        }
+    //    public Maze()
+    //    {
+    //        this.rooms = new Dictionary<int, Room>();
+    //    }
 
-        public void AddRoom(Room room)
-        {
-            rooms.Add(room.RoomNumber, room);
-        }
-        public Room RoomNo(int number)
-        {
-            return rooms[number];
-        }
-    }
+    //    public void AddRoom(Room room)
+    //    {
+    //        rooms.Add(room.RoomNumber, room);
+    //    }
+    //    public Room RoomNo(int number)
+    //    {
+    //        return rooms[number];
+    //    }
+    //}
 
     //class MazeGame
     //{
@@ -460,12 +461,14 @@ namespace MazeGame
         public override Door MakeDoor(Room room1, Room room2)
         {
             Door door = prototypeDoor.Clone();
-            door.Initalize(room1, room2);
+            door.Initialize(room1, room2);
 
             return door;
         }
 
     }
+
+    
 
     class Door : MapSite
     {
@@ -534,6 +537,95 @@ namespace MazeGame
         }
     }
 
+    class Room : MapSite
+    {
+        int roomNumber = 0;
+        Dictionary<Direction, MapSite> sides;
+
+        public Room(int roomNo)
+        {
+            this.roomNumber = roomNo;
+            sides = new Dictionary<Direction, MapSite>(4);
+        }
+
+        public override void Enter()
+        {
+            Console.WriteLine("Room");
+        }
+
+        public MapSite GetSide(Direction direction)
+        {
+            return sides[direction];
+        }
+        public void SetSide(Direction direction, MapSite mapSite)
+        {
+            this.sides.Add(direction, mapSite);
+        }
+
+        public int RoomNumber
+        {
+            get { return roomNumber; }
+            set { roomNumber = value; }
+        }
+
+        public virtual Room Clone()
+        {
+            Room room = new Room(this.roomNumber);            
+            return room;
+        }
+
+        public virtual void Initialize(int number)
+        {
+            this.roomNumber = number;
+        }
+
+    }
+
+    class Wall : MapSite
+    {
+        public Wall()
+        {
+
+        }
+
+        public override void Enter()
+        {
+            Console.WriteLine("Wall");
+        }
+
+        public virtual Wall Clone()
+        {
+            Wall wall = new Wall();
+            return wall;
+        }
+
+    }
+
+    class Maze
+    {
+        Dictionary<int, Room> rooms = null;
+
+        public Maze()
+        {
+            this.rooms = new Dictionary<int, Room>();
+        }
+
+        public void AddRoom(Room room)
+        {
+            rooms.Add(room.RoomNumber, room);
+        }
+        public Room RoomNo(int number)
+        {
+            return rooms[number];
+        }
+
+        public virtual Maze Clone()
+        {
+            Maze maze = new Maze();
+            return maze;
+        }
+    }
+
 
     class Program
     {
@@ -542,11 +634,12 @@ namespace MazeGame
             //--------------------------------------------------- Prototype
             MazeGame game = new MazeGame();
 
-            MazePrototypeFactory simpleMazeFactory = new MazePrototypeFactory(new Maze(), new Wall(), new Room(), new Door());
+            MazePrototypeFactory simpleMazeFactory = new MazePrototypeFactory(new Maze(), new Wall(), new Room(1), new Door());
 
-            Maze maze = game.CreateMaze(simpleMazeFactory);
+            //Maze maze = game.CreateMaze(simpleMazeFactory);
+            Maze maze = game.CreateMaze();
 
-            MazePrototypeFactory bombedMazeFactory = new MazePrototypeFactory(new Maze(), new Wall(), new Room(), new Door());
+            MazePrototypeFactory bombedMazeFactory = new MazePrototypeFactory(new Maze(), new Wall(), new Room(1), new Door());
 
             Console.ReadKey();
         }
