@@ -161,6 +161,10 @@ namespace MazeGame
         {
             return new Door(room1, room2);
         }
+
+        // Singleton
+        // ...
+
     }
 
     //class MazeGame
